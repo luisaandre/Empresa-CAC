@@ -75,3 +75,35 @@ export async function salvarProdutoNoBanco(produtoObjeto) {
     localStorage.setItem('listaProdutos', JSON.stringify(produtos));
     return new Promise(resolve => setTimeout(resolve, 0)); 
 }
+
+//salva as saidas e desconta do estoque
+function inicializarSaidas() {
+    let saidas = JSON.parse(localStorage.getItem('listaSaidas'));
+    if (!saidas) {
+        saidas = []; 
+        localStorage.setItem('listaSaidas', JSON.stringify(saidas));
+    }
+    return saidas;
+}
+
+export function obterSaidas() {
+    return inicializarSaidas();
+}
+
+export async function salvarSaidaNoBanco(saidaObjeto) {
+    let saidas = inicializarSaidas();
+    saidas.push(saidaObjeto); 
+    localStorage.setItem('listaSaidas', JSON.stringify(saidas));
+    
+    let produtos = JSON.parse(localStorage.getItem('listaProdutos'));
+    let indexProduto = produtos.findIndex(p => p.nome === saidaObjeto.produto);
+    
+    if (indexProduto !== -1) {
+        let qtdAtual = parseInt(produtos[indexProduto].quantidade);
+        let qtdSaida = parseInt(saidaObjeto.quantidade);
+        produtos[indexProduto].quantidade = (qtdAtual - qtdSaida).toString();
+        localStorage.setItem('listaProdutos', JSON.stringify(produtos));
+    }
+
+    return new Promise(resolve => setTimeout(resolve, 100)); 
+}

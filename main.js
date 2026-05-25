@@ -1,5 +1,4 @@
-import { obterCategorias, salvarCategoriaNoBanco, obterFornecedores, salvarFornecedorNoBanco, obterProdutos, salvarProdutoNoBanco } from './bancodedadosfalso.js';
-
+import { obterCategorias, salvarCategoriaNoBanco, obterFornecedores, salvarFornecedorNoBanco, obterProdutos, salvarProdutoNoBanco, obterSaidas, salvarSaidaNoBanco } from './bancodedadosfalso.js';
 
 //perfil
 const botaoPerfil = document.querySelector('.troca-perfil');
@@ -504,15 +503,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-//selecionar produtos cadastrados na saida
+//select da categoria e do produto
 document.addEventListener('DOMContentLoaded', () => {
-    
     const selectProdutoSaida = document.getElementById('produto-saida');
-
+    const selectCategoria = document.getElementById('categoria');
     if (selectProdutoSaida) {
         const produtosDoEstoque = obterProdutos();
-
         selectProdutoSaida.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
         
         produtosDoEstoque.forEach(produto => {
@@ -522,15 +518,20 @@ document.addEventListener('DOMContentLoaded', () => {
             selectProdutoSaida.appendChild(opcao);
         });
     }
-});
 
-// PREENCHER CATEGORIA AUTOMATICAMENTE (SAÍDA)
-document.addEventListener('DOMContentLoaded', () => {
-    const selectProdutoSaida = document.getElementById('produto-saida');
-    const selectCategoria = document.getElementById('categoria');
+    if (selectCategoria) {
+        const categoriesSalvas = obterCategorias();
+        selectCategoria.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
+        
+        categoriesSalvas.forEach(categoria => {
+            const opcao = document.createElement('option');
+            opcao.value = categoria;
+            opcao.textContent = categoria;
+            selectCategoria.appendChild(opcao);
+        });
+    }
 
     if (selectProdutoSaida && selectCategoria) {
-        
         selectProdutoSaida.addEventListener('change', function() {
             const nomeProdutoSelecionado = this.value;
             const produtosSalvos = obterProdutos();
@@ -539,6 +540,154 @@ document.addEventListener('DOMContentLoaded', () => {
             if (produtoEncontrado) {
                 selectCategoria.value = produtoEncontrado.tipo;
                 selectCategoria.disabled = true; 
+            }
+        });
+    }
+});
+
+
+// salvar saida
+document.addEventListener('DOMContentLoaded', () => {
+    // Verifica se estamos na tela de cadastrar saída
+    if (window.location.pathname.includes('cadastrar-saida')) {
+        const btnSalvarSaida = document.getElementById('btn-salvar-produto');
+        
+        if (btnSalvarSaida) {
+            btnSalvarSaida.addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const produto = document.getElementById('produto-saida').value;
+                const categoria = document.getElementById('categoria').value;
+                const quantidade = document.getElementById('quantidade').value.trim();
+
+                if (produto && categoria && quantidade) {
+                    
+                    const qtdSolicitada = parseInt(quantidade);
+
+                    // 1. CHECAGEM DE ESTOQUE (A TRAVA DE SEGURANÇA)
+                    const produtosSalvos = obterProdutos();
+                    const produtoEncontrado = produtosSalvos.find(p => p.nome === produto);
+                    
+                    if (produtoEncontrado) {
+                        const estoqueAtual = parseInt(produtoEncontrado.quantidade);
+                        
+                        // Se pedir mais do que tem, exibe o erro e aborta a missão!
+                        if (qtdSolicitada > estoqueAtual) {
+                            alert(`Operação negada! A quantidade solicitada (${qtdSolicitada}) é maior do que o estoque disponível (${estoqueAtual}).`);
+                            return; // O return faz o código parar aqui, impedindo o salvamento
+                        }
+                    }
+
+                    // 2. SE PASSOU PELA TRAVA, SALVA NORMALMENTE
+                    const dataAtual = new Date();
+                    const dia = String(dataAtual.getDate()).padStart(2, '0');
+                    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+                    const dataFormatada = `${dia}/${mes}`; 
+                    
+                    const horas = String(dataAtual.getHours()).padStart(2, '0');
+                    const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
+                    const horarioFormatado = `${horas}:${minutos}`; 
+
+                    const setorLogado = document.querySelector('.troca-perfil #cargo').textContent.trim();
+
+                    const novaSaida = {
+                        produto: produto,
+                        categoria: categoria,
+                        quantidade: quantidade,
+                        data: dataFormatada,
+                        horario: horarioFormatado,
+                        setor: setorLogado
+                    };
+
+                    await salvarSaidaNoBanco(novaSaida);
+                    window.location.href = 'saidas.html';
+                }
+            });
+        }
+    }
+});
+
+// historico de saidas
+document.addEventListener('DOMContentLoaded', () => {
+    const listaSaidas = document.getElementById('lista-saidas');
+
+    if (listaSaidas) {
+        const saidas = obterSaidas();
+        const categoriasSalvas = obterCategorias();
+        const paletaCoresPasteis = ['#A7D4FF', '#FFB4A7', '#A7FFBE', '#c6a7ff', '#fff6a7'];
+
+        listaSaidas.innerHTML = '';
+
+        const saidasPorCategoria = {};
+        saidas.forEach(saida => {
+            if (!saidasPorCategoria[saida.categoria]) saidasPorCategoria[saida.categoria] = [];
+            saidasPorCategoria[saida.categoria].push(saida);
+        });
+
+        categoriasSalvas.forEach((categoria, index) => {
+            const saidasDestaCategoria = saidasPorCategoria[categoria];
+            
+            if (saidasDestaCategoria && saidasDestaCategoria.length > 0) {
+                const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
+
+                const saidasPorData = {};
+                saidasDestaCategoria.forEach(s => {
+                    if (!saidasPorData[s.data]) saidasPorData[s.data] = [];
+                    saidasPorData[s.data].push(s);
+                });
+
+                let HTMLdasDatas = '';
+                
+                for (const [data, itens] of Object.entries(saidasPorData)) {
+                    let linhasTabela = '';
+                    
+                    itens.forEach(item => {
+                        linhasTabela += `
+                            <tr>
+                                <td>${item.horario}</td>
+                                <td>${item.produto}</td>
+                                <td>${item.setor}</td>
+                                <td>${item.quantidade}</td>
+                            </tr>
+                        `;
+                    });
+
+                    HTMLdasDatas += `
+                        <details class="data-saida">
+                            <summary>
+                                <div class="seta-data"></div>
+                                <p>${data}</p>
+                            </summary>
+                            <table class="tabela-saidas">
+                                <thead>
+                                    <tr>
+                                        <th>Horário</th>
+                                        <th>Produto</th>
+                                        <th>Setor</th>
+                                        <th>Quantidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${linhasTabela}
+                                </tbody>
+                            </table>
+                        </details>
+                    `;
+                }
+                const cardHtml = `
+                    <details class="tipo-produtos">
+                        <summary>
+                            <div class="tipo-header">
+                                <span class="dot" style="background-color: ${cor};"></span>
+                                <p>${categoria}</p>
+                            </div>
+                        </summary>
+                        <div class="datas-container">
+                            ${HTMLdasDatas}
+                        </div>
+                    </details>
+                `;
+                listaSaidas.insertAdjacentHTML('beforeend', cardHtml);
             }
         });
     }

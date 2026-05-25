@@ -603,3 +603,71 @@ header {
     border-radius: 16px;
 }
 
+.datas-container {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.data-saida {
+    border: 1px solid #EBEBEB;
+    border-radius: 12px;
+    padding: 15px 25px;
+    background-color: var(--branco);
+}
+
+.data-saida summary {
+    list-style: none;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--preto);
+}
+
+.data-saida summary::-webkit-details-marker {
+    display: none;
+}
+
+.seta-data {
+    width: 6px;
+    height: 6px;
+    border-bottom: 2px solid var(--azul);
+    border-right: 2px solid var(--azul);
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+}
+
+.data-saida[open] .seta-data {
+    transform: rotate(45deg);
+}
+
+.tabela-saidas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabela-saidas th {
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--preto);
+    padding-bottom: 15px;
+}
+
+.tabela-saidas td {
+    padding: 12px 0;
+    font-size: 14px;
+    color: #555555;
+    border-bottom: none;
+}
+
+.tabela-saidas th:nth-child(1), .tabela-saidas td:nth-child(1) { width: 15%; padding-left: 28px; }
+.tabela-saidas th:nth-child(2), .tabela-saidas td:nth-child(2) { width: 40%; }
+.tabela-saidas th:nth-child(3), .tabela-saidas td:nth-child(3) { width: 25%; }
+.tabela-saidas th:nth-child(4), .tabela-saidas td:nth-child(4) { width: 20%; text-align: center; }
