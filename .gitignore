@@ -1,9 +1,17 @@
-# Arquivos do Sistema Operacional
+# --- Dependências e Build ---
+node_modules/
+dist/
+build/
+out/
+.cache/
+package-lock.json
+yarn.lock
+npm-debug.log
+yarn-error.log
+
+# --- Configurações de IDE e Sistema ---
 .DS_Store
 Thumbs.db
-ehthumbs.db
-
-# Configurações de IDEs e Editores
 .vscode/
 .idea/
 *.sublime-project
@@ -11,17 +19,14 @@ ehthumbs.db
 .project
 .settings/
 
-# Arquivos de log
-*.log
-
-# Variáveis de ambiente (Segurança)
+# --- Variáveis de Ambiente (Segurança) ---
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Pastas de Build (caso utilize ferramentas de compilação)
-dist/
-build/
-out/
+# --- Arquivos de Log e Testes ---
+*.log
+coverage/
+.nyc_output/
