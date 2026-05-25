@@ -1,34 +1,35 @@
 import { obterCategorias, salvarCategoriaNoBanco, obterFornecedores, salvarFornecedorNoBanco, obterProdutos, salvarProdutoNoBanco, obterSaidas, salvarSaidaNoBanco } from './bancodedadosfalso.js';
 
 //perfil
+//perfil
 const botaoPerfil = document.querySelector('.troca-perfil');
 const menuContent = document.querySelector('.outro-perfil');
 
-botaoPerfil.addEventListener('click', function(event) {
-    event.stopPropagation(); 
-    menuContent.classList.toggle('aberto');
-    botaoPerfil.classList.toggle('ativo'); 
-});
+if (botaoPerfil && menuContent) { 
+    botaoPerfil.addEventListener('click', function(event) {
+        event.stopPropagation(); 
+        menuContent.classList.toggle('aberto');
+        botaoPerfil.classList.toggle('ativo'); 
+    });
 
-document.addEventListener('click', function(event) {
-    if (!menuContent.contains(event.target) && !botaoPerfil.contains(event.target)) {
-        menuContent.classList.remove('aberto');
-        botaoPerfil.classList.remove('ativo');
-    }
-});
+    document.addEventListener('click', function(event) {
+        if (!menuContent.contains(event.target) && !botaoPerfil.contains(event.target)) {
+            menuContent.classList.remove('aberto');
+            botaoPerfil.classList.remove('ativo');
+        }
+    });
 
-menuContent.addEventListener('click', function(event) {
-    const linkClicado = event.target.closest('a');
-    
-    if (linkClicado) {
-        const nomeUsuario = linkClicado.querySelector('#usuario').textContent.trim();
+    menuContent.addEventListener('click', function(event) {
+        const linkClicado = event.target.closest('a');
         
-        let claimAtivo = nomeUsuario.includes("Maria") ? "Maria" : "Joao";
-        localStorage.setItem('perfilAtivo', claimAtivo);
-        
-        return true; 
-    }
-});
+        if (linkClicado) {
+            const nomeUsuario = linkClicado.querySelector('#usuario').textContent.trim();
+            let claimAtivo = nomeUsuario.includes("Maria") ? "Maria" : "Joao";
+            localStorage.setItem('perfilAtivo', claimAtivo);
+            return true; 
+        }
+    });
+}
 
 //barra lateral
     const urlAtual = window.location.pathname; 
@@ -613,100 +614,116 @@ document.addEventListener('DOMContentLoaded', () => {
 
         listaSaidas.innerHTML = '';
 
-        const saidasPorCategoria = {};
-        saidas.forEach(saida => {
-            if (!saidasPorCategoria[saida.categoria]) saidasPorCategoria[saida.categoria] = [];
-            saidasPorCategoria[saida.categoria].push(saida);
-        });
+        // SE NÃO TIVER NENHUMA SAÍDA REGISTRADA
+        if (saidas.length === 0) {
+            listaSaidas.innerHTML = `
+                <div class="mensagem-vazia">
+                    Nenhuma saída cadastrada.
+                </div>
+            `;
+        } 
+        // SE TIVER SAÍDAS, RENDERIZA OS CARDS NORMALMENTE
+        else {
+            const saidasPorCategoria = {};
+            saidas.forEach(saida => {
+                if (!saidasPorCategoria[saida.categoria]) saidasPorCategoria[saida.categoria] = [];
+                saidasPorCategoria[saida.categoria].push(saida);
+            });
 
-        categoriasSalvas.forEach((categoria, index) => {
-            const saidasDestaCategoria = saidasPorCategoria[categoria];
-            
-            if (saidasDestaCategoria && saidasDestaCategoria.length > 0) {
-                const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
-
-                const saidasPorData = {};
-                saidasDestaCategoria.forEach(s => {
-                    if (!saidasPorData[s.data]) saidasPorData[s.data] = [];
-                    saidasPorData[s.data].push(s);
-                });
-
-                let HTMLdasDatas = '';
+            categoriasSalvas.forEach((categoria, index) => {
+                const saidasDestaCategoria = saidasPorCategoria[categoria];
                 
-                for (const [data, itens] of Object.entries(saidasPorData)) {
-                    let linhasTabela = '';
-                    
-                    itens.forEach(item => {
-                        linhasTabela += `
-                            <tr>
-                                <td>${item.horario}</td>
-                                <td>${item.produto}</td>
-                                <td>${item.setor}</td>
-                                <td>${item.quantidade}</td>
-                            </tr>
-                        `;
+                if (saidasDestaCategoria && saidasDestaCategoria.length > 0) {
+                    const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
+
+                    const saidasPorData = {};
+                    saidasDestaCategoria.forEach(s => {
+                        if (!saidasPorData[s.data]) saidasPorData[s.data] = [];
+                        saidasPorData[s.data].push(s);
                     });
 
-                    HTMLdasDatas += `
-                        <details class="data-saida">
+                    let HTMLdasDatas = '';
+                    
+                    for (const [data, itens] of Object.entries(saidasPorData)) {
+                        let linhasTabela = '';
+                        
+                        itens.forEach(item => {
+                            linhasTabela += `
+                                <tr>
+                                    <td>${item.horario}</td>
+                                    <td>${item.produto}</td>
+                                    <td>${item.setor}</td>
+                                    <td>${item.quantidade}</td>
+                                </tr>
+                            `;
+                        });
+
+                        HTMLdasDatas += `
+                            <details class="data-saida">
+                                <summary>
+                                    <div class="seta-data"></div>
+                                    <p>${data}</p>
+                                </summary>
+                                <table class="tabela-saidas">
+                                    <thead>
+                                        <tr>
+                                            <th>Horário</th>
+                                            <th>Produto</th>
+                                            <th>Setor</th>
+                                            <th>Quantidade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${linhasTabela}
+                                    </tbody>
+                                </table>
+                            </details>
+                        `;
+                    }
+                    const cardHtml = `
+                        <details class="tipo-produtos">
                             <summary>
-                                <div class="seta-data"></div>
-                                <p>${data}</p>
+                                <div class="tipo-header">
+                                    <span class="dot" style="background-color: ${cor};"></span>
+                                    <p>${categoria}</p>
+                                </div>
                             </summary>
-                            <table class="tabela-saidas">
-                                <thead>
-                                    <tr>
-                                        <th>Horário</th>
-                                        <th>Produto</th>
-                                        <th>Setor</th>
-                                        <th>Quantidade</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${linhasTabela}
-                                </tbody>
-                            </table>
+                            <div class="datas-container">
+                                ${HTMLdasDatas}
+                            </div>
                         </details>
                     `;
+                    listaSaidas.insertAdjacentHTML('beforeend', cardHtml);
                 }
-                const cardHtml = `
-                    <details class="tipo-produtos">
-                        <summary>
-                            <div class="tipo-header">
-                                <span class="dot" style="background-color: ${cor};"></span>
-                                <p>${categoria}</p>
-                            </div>
-                        </summary>
-                        <div class="datas-container">
-                            ${HTMLdasDatas}
-                        </div>
-                    </details>
-                `;
-                listaSaidas.insertAdjacentHTML('beforeend', cardHtml);
-            }
-        });
+            });
+        }
     }
 });
 
 
 //login
-const btnEntrar = document.getElementById('btn-entrar');
-const emailInput = document.getElementById('email');
-const senhaInput = document.getElementById('senha');
-const msgErro = document.getElementById('mensagem-erro');
+document.addEventListener('DOMContentLoaded', () => {
+    const btnEntrar = document.getElementById('btn-entrar');
+    const emailInput = document.getElementById('email');
+    const senhaInput = document.getElementById('senha');
+    const msgErro = document.getElementById('mensagem-erro');
 
-btnEntrar.addEventListener('click', async () => {
-    btnEntrar.textContent = "Aguarde...";
-    await new Promise(resolve => setTimeout(resolve, 0));
+    if (btnEntrar && emailInput && senhaInput && msgErro) {
+        btnEntrar.addEventListener('click', async () => {
+            btnEntrar.textContent = "Aguarde...";
 
-    const email = emailInput.value;
-    const senha = senhaInput.value;
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-    if (email === "joaodasilva@cac.br" && senha === "12345") {
-        localStorage.setItem('perfilAtivo', 'Joao');
-        window.location.href = "administrativo/estoque.html";
-    } else {
-        msgErro.style.display = "block";
-        btnEntrar.textContent = "Entrar";
+            const email = emailInput.value.trim();
+            const senha = senhaInput.value;
+
+            if (email === "joaodasilva@cac.br" && senha === "12345") {
+                localStorage.setItem('perfilAtivo', 'Joao');
+                window.location.href = "administrativo/estoque.html"; 
+            } else {
+                msgErro.classList.remove('oculto');
+                btnEntrar.textContent = "Entrar";
+            }
+        });
     }
 });

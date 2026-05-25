@@ -672,66 +672,112 @@ header {
 .tabela-saidas th:nth-child(3), .tabela-saidas td:nth-child(3) { width: 25%; }
 .tabela-saidas th:nth-child(4), .tabela-saidas td:nth-child(4) { width: 20%; text-align: center; }
 
-.pagina-login {
+
+/*login*/
+body.pagina-login {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: var(--fundo-cinza);
+    background-color: var(--branco); 
     margin: 0;
 }
 
-.login-card {
-    background: var(--branco);
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+.login-container {
     width: 100%;
-    max-width: 400px;
-    text-align: center;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 70px; 
 }
 
-.login-card img { 
-    width: 150px; 
-    margin-bottom: 20px; 
+.logo-login {
+    width: 250px; 
 }
 
-.input-group { 
-    margin-bottom: 20px; 
-    text-align: left; 
+.form-login {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
-.input-group label { 
-    display: block; 
-    margin-bottom: 5px; 
-    font-weight: 600; 
+.input-linha {
+    position: relative;
+    width: 100%;
 }
 
-.input-group input { 
-    width: 100%; 
-    padding: 12px; 
-    border: 1px solid var(--cinza-claro); 
-    border-radius: 8px; 
-    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+.input-linha input {
+    width: 100%;
+    padding: 10px 30px 10px 0;
+    border: none;
+    border-bottom: 2px solid #D6D6D6;
+    background: transparent;
+    font-size: 15px;
+    color: var(--preto);
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-button#btn-entrar {
-    width: 100%; 
-    padding: 12px; 
-    border: none; 
-    border-radius: 8px;
-    background-color: var(--azul); 
-    color: var(--branco); 
-    font-weight: 700; 
+.input-linha input::placeholder {
+    color: var(--cinza-claro);
+    font-weight: 300;
+}
+
+.input-linha input:focus {
+    border-bottom: 2px solid var(--azul);
+}
+
+.icone-input {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1; 
+}
+
+.icone-user {
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="%23D6D6D6" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>');
+}
+
+.icone-eye {
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="%23D6D6D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s5-7 10-7 10 7 10 7"/><circle cx="12" cy="12" r="3"/></svg>');
+    cursor: pointer;
+}
+
+#btn-entrar {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 25px; 
+    background-color: var(--azul);
+    color: var(--branco);
+    font-weight: 600;
+    font-size: 16px;
     cursor: pointer;
     transition: background 0.3s;
+    margin-top: 15px;
 }
 
-button#btn-entrar:hover {
+#btn-entrar:hover {
     background-color: var(--azul-claro);
 }
 
 #mensagem-erro {
-    color: #ff4646; 
-    margin-top: 15px;
+    color: #ff4646;
+    font-size: 14px;
+    text-align: center;
+    margin: -15px 0 0 0;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-reveal {
+    display: none !important;
 }
