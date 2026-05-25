@@ -548,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // salvar saida
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica se estamos na tela de cadastrar saída
     if (window.location.pathname.includes('cadastrar-saida')) {
         const btnSalvarSaida = document.getElementById('btn-salvar-produto');
         
@@ -563,22 +562,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (produto && categoria && quantidade) {
                     
                     const qtdSolicitada = parseInt(quantidade);
-
-                    // 1. CHECAGEM DE ESTOQUE (A TRAVA DE SEGURANÇA)
                     const produtosSalvos = obterProdutos();
                     const produtoEncontrado = produtosSalvos.find(p => p.nome === produto);
                     
                     if (produtoEncontrado) {
                         const estoqueAtual = parseInt(produtoEncontrado.quantidade);
                         
-                        // Se pedir mais do que tem, exibe o erro e aborta a missão!
                         if (qtdSolicitada > estoqueAtual) {
                             alert(`Operação negada! A quantidade solicitada (${qtdSolicitada}) é maior do que o estoque disponível (${estoqueAtual}).`);
-                            return; // O return faz o código parar aqui, impedindo o salvamento
+                            return;
                         }
                     }
-
-                    // 2. SE PASSOU PELA TRAVA, SALVA NORMALMENTE
+                    
                     const dataAtual = new Date();
                     const dia = String(dataAtual.getDate()).padStart(2, '0');
                     const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
