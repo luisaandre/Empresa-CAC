@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="imgs/favicon-cac.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <script type="module" src="../main.js" defer></script>
+    <title>CAC - Cadastro de fornecedor</title>
+</head>
+<body>
+    <header>
+        <img src="../imgs/logo.png" class="logo">
+        
+        <div class="perfil">
+            
+            <button class="troca-perfil">
+                <img src="../imgs/foto-perfil-joao.png" class="foto-perfil">
+                <p id="usuario">João da Silva</p>
+                <p id="cargo">Administração</p>
+                <div class="seta" id="seta-usuario"></div>
+            </button>
+
+            <a href="../Financeiro/saidas.html" class="outro-perfil">
+                <img src="../imgs/foto-perfil-maria.png" class="foto-perfil">
+                <p id="usuario">Maria Souza</p>
+                <p id="cargo">Financeiro</p>
+            </a>
+            
+        </div>
+    </header>
+
+    <section class="barra-lateral">
+        <div class="produtos-contain">
+            <div class="produto-row">
+                <div class="seta" id="seta-pedidos"></div>
+                <h2 class="produtos">Produtos</h2>
+            </div>
+
+            <a href="estoque.html" class="estoque-contain">
+                <h3 class="estoque">Estoque</h3>
+            </a>
+
+            <a href="historico.html" class="historico-contain">
+                <h3 class="historico">Histórico de saídas</h3>
+            </a>
+            
+        </div>
+        
+        <div class="fornecedores">
+            <div class="fornec-row">
+                <a href="fornecedores.html" class="fornec-contain">
+                    <h2 class="fornec">Fornecedores</h2>
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="conteudo">
+        <h1 class="titulo">Cadastrar novo fornecedor</h1>
+
+        <section class="formulario">
+            <form action="" method="POST" class="form-cadastro">
+        
+                <div class="linha-1">
+                    <div class="campo" style="flex: 1.5;">
+                        <label for="nome-fantasia">Nome Fantasia:</label>
+                        <input type="text" id="nome-fantasia" name="nome-fantasia">
+                    </div>
+
+                    <div class="campo" style="flex: 1;">
+                        <label for="cnpj">CNPJ:</label>
+                        <input type="text" id="cnpj" name="cnpj">
+                    </div>
+                </div>
+
+                <div class="linha-2">
+                    <div class="campo" style="flex: 1.5;">
+                        <label for="razao-social">Razão social:</label>
+                        <input type="text" id="razao-social" name="razao-social">
+                    </div>
+
+                    <div class="campo" style="flex: 1;">
+                        <label for="contato">Contato:</label>
+                        <input type="text" id="contato" name="contato">
+                    </div>
+                </div>
+
+                <div class="linha-3">
+                    <div class="campo" style="flex: 1;">
+                        <label for="rua">Rua:</label>
+                        <input type="text" id="rua" name="rua">
+                    </div> 
+                </div>
+
+                <div class="linha-4">
+                    <div class="campo" style="flex: 1.5;">
+                        <label for="bairro">Bairro:</label>
+                        <input type="text" id="bairro" name="bairro">
+                    </div> 
+
+                    <div class="campo" style="flex: 1;">
+                        <label for="cep">CEP:</label>
+                        <input type="text" id="cep" name="cep">
+                    </div> 
+                </div>
+
+                <div class="linha-5">
+                    <div class="campo" style="flex: 0.75;">
+                        <label for="estado">Estado:</label>
+                        <input type="text" id="estado" name="estado">
+                    </div> 
+
+                    <div class="campo" style="flex: 0.75;">
+                        <label for="cidade">Cidade:</label>
+                        <input type="text" id="cidade" name="cidade">
+                    </div> 
+                    
+                    <div style="flex: 1;"></div>
+                </div>
+
+            </form>
+        </section>
+
+        <div class="container-botao">
+            <a href="../administrativo/fornecedores.html">
+                <button class="salvar">Salvar</button>
+            </a>
+        </div>
+        
+    </section>
+    
+</body>
+</html>

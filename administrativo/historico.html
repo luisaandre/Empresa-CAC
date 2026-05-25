@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="imgs/favicon-cac.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <script type="module" src="../main.js" defer></script>
+    <title>CAC - Histórico de saídas</title>
+</head>
+<body>
+    <header>
+        <img src="../imgs/logo.png" class="logo">
+        
+        <div class="perfil">
+            
+            <button class="troca-perfil">
+                <img src="../imgs/foto-perfil-joao.png" class="foto-perfil">
+                <p id="usuario">João da Silva</p>
+                <p id="cargo">Administração</p>
+                <div class="seta" id="seta-usuario"></div>
+            </button>
+
+            <a href="../Financeiro/saidas.html" class="outro-perfil">
+                <img src="../imgs/foto-perfil-maria.png" class="foto-perfil">
+                <p id="usuario">Maria Souza</p>
+                <p id="cargo">Financeiro</p>
+            </a>
+            
+        </div>
+    </header>
+
+    <section class="barra-lateral">
+        <div class="produtos-contain">
+            <div class="produto-row">
+                <div class="seta" id="seta-pedidos"></div>
+                <h2 class="produtos">Produtos</h2>
+            </div>
+
+            <a href="estoque.html" class="estoque-contain">
+                <h3 class="estoque">Estoque</h3>
+            </a>
+
+            <a href="historico.html" class="historico-contain">
+                <h3 class="historico">Histórico de saídas</h3>
+            </a>
+            
+        </div>
+        
+        <div class="fornecedores">
+            <div class="fornec-row">
+                <a href="fornecedores.html" class="fornec-contain">
+                    <h2 class="fornec">Fornecedores</h2>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+    
+    <section class="conteudo">
+        <h1 class="titulo">Histórico de saídas</h1>
+        
+        <section class="pesquisa-e-cadastro">
+            <div class="pesquisa">
+                <input type="text" class="input-pesquisa" placeholder="Pesquisar produto">
+            </div>
+        </section>
+
+        <section class="cards">
+            <!--
+            <details class="tipo-produtos" id="limpeza">
+                <summary>
+                    <div class="tipo-header">
+                        <span class="dot azul"></span>
+                        <p>Limpeza</p>
+                    </div>
+                </summary>
+
+                <table class="conteudo-cards">
+                    <thead>
+                        <tr class="colunas">
+                            <th class="coluna-produto">Produto</th>
+                            <th class="coluna-fornecedor">Fornecedor</th>
+                            <th class="coluna-valor-uni">Valor unitário</th>
+                            <th class="coluna-valor-total">Valor total</th>
+                            <th class="coluna-quantidade">Quantidade</th>
+                            <th class="coluna-data-compra">Data da compra</th>
+                            <th class="coluna-em-estoque">Em estoque</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="celulas"></tbody>
+                </table>
+            </details>
+
+            <details class="tipo-produtos" id="alimentício">
+                <summary>
+                    <div class="tipo-header">
+                        <span class="dot vermelho"></span>
+                        <p>Alimentício</p>
+                    </div>
+                </summary>
+
+                <table class="conteudo-cards">
+                    <thead>
+                        <tr class="colunas">
+                            <th class="coluna-produto">Produto</th>
+                            <th class="coluna-fornecedor">Fornecedor</th>
+                            <th class="coluna-valor-uni">Valor unitário</th>
+                            <th class="coluna-valor-total">Valor total</th>
+                            <th class="coluna-quantidade">Quantidade</th>
+                            <th class="coluna-data-compra">Data da compra</th>
+                            <th class="coluna-em-estoque">Em estoque</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="celulas"></tbody>
+                </table>
+            </details>
+
+            <details class="tipo-produtos" id="almoxarifado">
+                <summary>
+                    <div class="tipo-header">
+                        <span class="dot verde"></span>
+                        <p>Almoxarifado</p>
+                    </div>
+                </summary>
+
+                <table class="conteudo-cards">
+                    <thead>
+                        <tr class="colunas">
+                            <th class="coluna-produto">Produto</th>
+                            <th class="coluna-fornecedor">Fornecedor</th>
+                            <th class="coluna-valor-uni">Valor unitário</th>
+                            <th class="coluna-valor-total">Valor total</th>
+                            <th class="coluna-quantidade">Quantidade</th>
+                            <th class="coluna-data-compra">Data da compra</th>
+                            <th class="coluna-em-estoque">Em estoque</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="celulas"></tbody>
+                </table>
+            </details>
+        -->
+        </section>
+    </section>
+    
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../imgs/favicon-cac.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <script type="module" src="../main.js" defer></script>
+    <title>CAC - Saídas</title>
+</head>
+<body>
+    <header>
+        <img src="../imgs/logo.png" class="logo">
+        
+        <div class="perfil">
+            
+            <button class="troca-perfil">
+                <img src="../imgs/foto-perfil-maria.png" class="foto-perfil">
+                <p id="usuario">Maria Souza</p>
+                <p id="cargo">Financeiro</p>
+                <div class="seta" id="seta-usuario"></div>
+            </button>
+
+            <a href="../administrativo/estoque.html" class="outro-perfil">
+                <img src="../imgs/foto-perfil-joao.png" class="foto-perfil">
+                <p id="usuario">João da Silva</p>
+                <p id="cargo">Administração</p>
+            </a>
+            
+        </div>
+    </header>
+
+    <section class="barra-lateral">
+        <div class="saidas-contain">
+            <div class="saida-row">
+                <h2 class="saidas" id="saidas">Registro de saídas</h2>
+            </div>
+
+    </section>
+
+    <section class="conteudo">
+        <h1 class="titulo">Registro de saídas</h1>
+        
+        <section class="pesquisa-e-cadastro">
+            <div class="pesquisa">
+                <input type="text" class="input-pesquisa" placeholder="Pesquisar saída">
+            </div>
+
+            <div class="cadastrar-saida">
+                <a href="./cadastrar-saida.html" class="botao-cadastrar-saida"> Cadastrar nova saída</a>
+            </div>
+        </section>
+
+        <section class="cards" id="lista-saidas"></section>
+    </section>
+    
+</body>
+</html>
