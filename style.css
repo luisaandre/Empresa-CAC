@@ -781,3 +781,48 @@ input[type="password"]::-ms-clear,
 input[type="password"]::-webkit-reveal {
     display: none !important;
 }
+
+.pesquisa-e-filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.filtros-historico {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-filtro {
+    background-color: transparent;
+    border: 1px solid var(--azul-claro);
+    color: var(--azul-claro);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-filtro.ativo, .btn-filtro:hover {
+    background-color: var(--azul-claro);
+    color: var(--branco);
+}
+
+.input-pequeno {
+    width: 250px;
+}
+
+.seta-baixo {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-bottom: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 8px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}

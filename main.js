@@ -606,98 +606,226 @@ document.addEventListener('DOMContentLoaded', () => {
 // historico de saidas
 document.addEventListener('DOMContentLoaded', () => {
     const listaSaidas = document.getElementById('lista-saidas');
+    const listaHistorico = document.getElementById('lista-historico');
+    
+    const inputPesquisa = document.querySelector('.input-pesquisa');
+    const botoesFiltro = document.querySelectorAll('.btn-filtro');
+    const inputCalendario = document.getElementById('input-calendario');
+    const btnCalendario = document.getElementById('btn-calendario');
+    const textoCalendario = document.getElementById('texto-calendario');
 
-    if (listaSaidas) {
-        const saidas = obterSaidas();
+    // Variáveis de estado
+    let filtroAtualTexto = '';
+    let filtroAtualData = 'todos'; 
+    let dataEspecifica = ''; // Guarda a data do calendário no formato DD/MM
+
+    const containerAtivo = listaSaidas || listaHistorico;
+    const isVisaoSetor = !!listaSaidas;
+
+    if (!containerAtivo) return;
+
+    // Calcula as datas
+    function verificarFiltroData(dataString, tipoFiltro) {
+        if (tipoFiltro === 'todos') return true;
+
+        // Se for a data exata escolhida no calendário
+        if (tipoFiltro === 'especifica') {
+            return dataString === dataEspecifica;
+        }
+
+        const partes = dataString.split('/');
+        if (partes.length !== 2) return true;
+
+        const anoAtual = new Date().getFullYear();
+        const dataItem = new Date(anoAtual, parseInt(partes[1]) - 1, parseInt(partes[0]));
+        
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        if (tipoFiltro === 'hoje') {
+            return dataItem.getTime() === hoje.getTime();
+        } else if (tipoFiltro === 'semana') {
+            const limite = new Date(hoje);
+            limite.setDate(hoje.getDate() - 7);
+            return dataItem >= limite;
+        } else if (tipoFiltro === 'mes') {
+            const limite = new Date(hoje);
+            limite.setDate(hoje.getDate() - 30);
+            return dataItem >= limite;
+        }
+        return true;
+    }
+
+    // Filtra e desenha na tela
+    function renderizarListagemDeSaidas() {
+        let saidas = obterSaidas();
         const categoriasSalvas = obterCategorias();
         const paletaCoresPasteis = ['#A7D4FF', '#FFB4A7', '#A7FFBE', '#c6a7ff', '#fff6a7'];
 
-        listaSaidas.innerHTML = '';
+        if (isVisaoSetor) {
+            const setorLogado = document.querySelector('.troca-perfil #cargo').textContent.trim();
+            saidas = saidas.filter(s => s.setor === setorLogado);
+        }
 
-        // SE NÃO TIVER NENHUMA SAÍDA REGISTRADA
+        saidas = saidas.filter(s => verificarFiltroData(s.data, filtroAtualData));
+
+        if (filtroAtualTexto !== '') {
+            saidas = saidas.filter(s => s.produto.toLowerCase().includes(filtroAtualTexto));
+        }
+
+        containerAtivo.innerHTML = '';
+
         if (saidas.length === 0) {
-            listaSaidas.innerHTML = `
+            containerAtivo.innerHTML = `
                 <div class="mensagem-vazia">
-                    Nenhuma saída cadastrada.
+                    Nenhum registro encontrado para os filtros atuais.
                 </div>
             `;
-        } 
-        // SE TIVER SAÍDAS, RENDERIZA OS CARDS NORMALMENTE
-        else {
-            const saidasPorCategoria = {};
-            saidas.forEach(saida => {
-                if (!saidasPorCategoria[saida.categoria]) saidasPorCategoria[saida.categoria] = [];
-                saidasPorCategoria[saida.categoria].push(saida);
-            });
+            return;
+        }
 
-            categoriasSalvas.forEach((categoria, index) => {
-                const saidasDestaCategoria = saidasPorCategoria[categoria];
+        const saidasPorCategoria = {};
+        saidas.forEach(saida => {
+            if (!saidasPorCategoria[saida.categoria]) saidasPorCategoria[saida.categoria] = [];
+            saidasPorCategoria[saida.categoria].push(saida);
+        });
+
+        categoriasSalvas.forEach((categoria, index) => {
+            const saidasDestaCategoria = saidasPorCategoria[categoria];
+            
+            if (saidasDestaCategoria && saidasDestaCategoria.length > 0) {
+                const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
+
+                const saidasPorData = {};
+                saidasDestaCategoria.forEach(s => {
+                    if (!saidasPorData[s.data]) saidasPorData[s.data] = [];
+                    saidasPorData[s.data].push(s);
+                });
+
+                let HTMLdasDatas = '';
                 
-                if (saidasDestaCategoria && saidasDestaCategoria.length > 0) {
-                    const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
-
-                    const saidasPorData = {};
-                    saidasDestaCategoria.forEach(s => {
-                        if (!saidasPorData[s.data]) saidasPorData[s.data] = [];
-                        saidasPorData[s.data].push(s);
+                for (const [data, itens] of Object.entries(saidasPorData)) {
+                    let linhasTabela = '';
+                    
+                    itens.forEach(item => {
+                        linhasTabela += `
+                            <tr>
+                                <td>${item.horario}</td>
+                                <td>${item.produto}</td>
+                                <td>${item.setor}</td>
+                                <td>${item.quantidade}</td>
+                            </tr>
+                        `;
                     });
 
-                    let HTMLdasDatas = '';
-                    
-                    for (const [data, itens] of Object.entries(saidasPorData)) {
-                        let linhasTabela = '';
-                        
-                        itens.forEach(item => {
-                            linhasTabela += `
-                                <tr>
-                                    <td>${item.horario}</td>
-                                    <td>${item.produto}</td>
-                                    <td>${item.setor}</td>
-                                    <td>${item.quantidade}</td>
-                                </tr>
-                            `;
-                        });
-
-                        HTMLdasDatas += `
-                            <details class="data-saida">
-                                <summary>
-                                    <div class="seta-data"></div>
-                                    <p>${data}</p>
-                                </summary>
-                                <table class="tabela-saidas">
-                                    <thead>
-                                        <tr>
-                                            <th>Horário</th>
-                                            <th>Produto</th>
-                                            <th>Setor</th>
-                                            <th>Quantidade</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${linhasTabela}
-                                    </tbody>
-                                </table>
-                            </details>
-                        `;
-                    }
-                    const cardHtml = `
-                        <details class="tipo-produtos">
+                    HTMLdasDatas += `
+                        <details class="data-saida" open>
                             <summary>
-                                <div class="tipo-header">
-                                    <span class="dot" style="background-color: ${cor};"></span>
-                                    <p>${categoria}</p>
-                                </div>
+                                <div class="seta-data"></div>
+                                <p>${data}</p>
                             </summary>
-                            <div class="datas-container">
-                                ${HTMLdasDatas}
-                            </div>
+                            <table class="tabela-saidas">
+                                <thead>
+                                    <tr>
+                                        <th>Horário</th>
+                                        <th>Produto</th>
+                                        <th>Setor</th>
+                                        <th>Quantidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${linhasTabela}
+                                </tbody>
+                            </table>
                         </details>
                     `;
-                    listaSaidas.insertAdjacentHTML('beforeend', cardHtml);
                 }
+                
+                const openAttr = (filtroAtualTexto !== '') ? 'open' : '';
+                
+                const cardHtml = `
+                    <details class="tipo-produtos" ${openAttr}>
+                        <summary>
+                            <div class="tipo-header">
+                                <span class="dot" style="background-color: ${cor};"></span>
+                                <p>${categoria}</p>
+                            </div>
+                        </summary>
+                        <div class="datas-container">
+                            ${HTMLdasDatas}
+                        </div>
+                    </details>
+                `;
+                containerAtivo.insertAdjacentHTML('beforeend', cardHtml);
+            }
+        });
+    }
+
+    // Cliques nos botões de filtro textuais
+    if (botoesFiltro.length > 0) {
+        botoesFiltro.forEach(btn => {
+            // Ignora o botão calendário neste loop (ele tem lógica própria abaixo)
+            if (btn.id === 'btn-calendario') return; 
+
+            btn.addEventListener('click', function() {
+                botoesFiltro.forEach(b => b.classList.remove('ativo'));
+                this.classList.add('ativo');
+
+                // Reseta visual do calendário se o usuário clicar em "Hoje", "Semana", etc
+                if (textoCalendario) textoCalendario.textContent = 'Calendário';
+
+                const textoBotao = this.textContent.trim().toLowerCase();
+                if (textoBotao.includes('hoje')) filtroAtualData = 'hoje';
+                else if (textoBotao.includes('semana')) filtroAtualData = 'semana';
+                else if (textoBotao.includes('30 dias')) filtroAtualData = 'mes';
+                else filtroAtualData = 'todos'; 
+
+                renderizarListagemDeSaidas();
             });
+        });
+
+        // Setup inicial
+        const botaoAtivo = document.querySelector('.btn-filtro.ativo');
+        if(botaoAtivo && botaoAtivo.id !== 'btn-calendario') {
+            const texto = botaoAtivo.textContent.toLowerCase();
+            if (texto.includes('hoje')) filtroAtualData = 'hoje';
+            else if (texto.includes('semana')) filtroAtualData = 'semana';
+            else if (texto.includes('30 dias')) filtroAtualData = 'mes';
         }
     }
+
+    if (inputCalendario && btnCalendario && textoCalendario) {
+        
+        // Garante que se o clique bater visualmente no botão, o calendário abre (suporte extra)
+        btnCalendario.addEventListener('click', function(e) {
+            // Alguns navegadores suportam showPicker() para forçar a abertura
+            if (typeof inputCalendario.showPicker === 'function') {
+                try { inputCalendario.showPicker(); } catch (err) {}
+            }
+        });
+
+        inputCalendario.addEventListener('change', function() {
+            if (!this.value) return; // Se o utilizador cancelar, não faz nada
+
+            // Pega a data YYYY-MM-DD do input e converte para DD/MM
+            const partes = this.value.split('-');
+            const dia = partes[2];
+            const mes = partes[1];
+            
+            dataEspecifica = `${dia}/${mes}`;
+            filtroAtualData = 'especifica';
+
+            // Ajusta o visual ativo
+            botoesFiltro.forEach(b => b.classList.remove('ativo'));
+            btnCalendario.classList.add('ativo');
+            
+            // Muda o texto do botão para a data escolhida
+            textoCalendario.textContent = dataEspecifica;
+
+            renderizarListagemDeSaidas();
+        });
+    }
+
 });
 
 
