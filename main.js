@@ -687,3 +687,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+//login
+const btnEntrar = document.getElementById('btn-entrar');
+const emailInput = document.getElementById('email');
+const senhaInput = document.getElementById('senha');
+const msgErro = document.getElementById('mensagem-erro');
+
+btnEntrar.addEventListener('click', async () => {
+    btnEntrar.textContent = "Aguarde...";
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const email = emailInput.value;
+    const senha = senhaInput.value;
+
+    if (email === "joaodasilva@cac.br" && senha === "12345") {
+        localStorage.setItem('perfilAtivo', 'Joao');
+        window.location.href = "administrativo/estoque.html";
+    } else {
+        msgErro.style.display = "block";
+        btnEntrar.textContent = "Entrar";
+    }
+});

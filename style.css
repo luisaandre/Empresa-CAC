@@ -671,3 +671,67 @@ header {
 .tabela-saidas th:nth-child(2), .tabela-saidas td:nth-child(2) { width: 40%; }
 .tabela-saidas th:nth-child(3), .tabela-saidas td:nth-child(3) { width: 25%; }
 .tabela-saidas th:nth-child(4), .tabela-saidas td:nth-child(4) { width: 20%; text-align: center; }
+
+.pagina-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--fundo-cinza);
+    margin: 0;
+}
+
+.login-card {
+    background: var(--branco);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-card img { 
+    width: 150px; 
+    margin-bottom: 20px; 
+}
+
+.input-group { 
+    margin-bottom: 20px; 
+    text-align: left; 
+}
+
+.input-group label { 
+    display: block; 
+    margin-bottom: 5px; 
+    font-weight: 600; 
+}
+
+.input-group input { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid var(--cinza-claro); 
+    border-radius: 8px; 
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+button#btn-entrar {
+    width: 100%; 
+    padding: 12px; 
+    border: none; 
+    border-radius: 8px;
+    background-color: var(--azul); 
+    color: var(--branco); 
+    font-weight: 700; 
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button#btn-entrar:hover {
+    background-color: var(--azul-claro);
+}
+
+#mensagem-erro {
+    color: #ff4646; 
+    margin-top: 15px;
+}
