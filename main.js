@@ -108,12 +108,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryAdd = document.getElementById('summary-adicionar');
     const textoAdd = document.getElementById('texto-adicionar');
     const inputNova = document.getElementById('input-nova-categoria');
+    
 
     if (detalhesAdd && summaryAdd && textoAdd && inputNova) {
         
         const paletaCoresPasteis = ['#A7D4FF', '#FFB4A7', '#A7FFBE', '#c6a7ff', '#fff6a7'];
 
-        const categoriasSalvas = obterCategorias();
+        const categoriasSalvas = await obterCategorias(); // Linha Alterado "await" foi adicionado (Gabriel)
         
         categoriasSalvas.forEach((categoria, index) => {
             const cor = paletaCoresPasteis[index % paletaCoresPasteis.length];
@@ -296,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaFornecedoresContainer = document.getElementById('lista-fornecedores');
 
     if (listaFornecedoresContainer) {
-        const fornecedoresSalvos = obterFornecedores();
+        const fornecedoresSalvos = await obterFornecedores(); // Linha alterada "await" adicionado (Gabriel)
         listaFornecedoresContainer.innerHTML = ''; 
 
         if (fornecedoresSalvos.length === 0) {
@@ -509,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectProdutoSaida = document.getElementById('produto-saida');
     const selectCategoria = document.getElementById('categoria');
     if (selectProdutoSaida) {
-        const produtosDoEstoque = obterProdutos();
+        const produtosDoEstoque = await obterProdutos(); // Linha alterada "await" adicionado (Gabriel)
         selectProdutoSaida.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
         
         produtosDoEstoque.forEach(produto => {
@@ -521,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (selectCategoria) {
-        const categoriesSalvas = obterCategorias();
+        const categoriesSalvas = await obterCategorias(); // Linha alterada "await" adicionada (Gabriel)
         selectCategoria.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
         
         categoriesSalvas.forEach(categoria => {

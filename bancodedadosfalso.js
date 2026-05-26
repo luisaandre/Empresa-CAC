@@ -1,109 +1,89 @@
-//para adicionar categorias
+const URL_API = 'http://localhost:3000/api';
 
-function inicializarCategorias() {
-    let categorias = JSON.parse(localStorage.getItem('listaCategorias'));
-    if (!categorias) {
-        categorias = []; 
-        localStorage.setItem('listaCategorias', JSON.stringify(categorias));
-    }
-    return categorias;
-}
-
-export function obterCategorias() {
-    return inicializarCategorias();
+// --- CATEGORIAS ---
+export async function obterCategorias() {
+    try {
+        const res = await fetch(`${URL_API}/categorias`);
+        return await res.json();
+    } catch (erro) { console.error(erro); return []; }
 }
 
 export async function salvarCategoriaNoBanco(nomeCategoria) {
-    let categorias = inicializarCategorias();
-    
-    if (!categorias.includes(nomeCategoria)) {
-        categorias.push(nomeCategoria);
-        localStorage.setItem('listaCategorias', JSON.stringify(categorias));
-        console.log(`[API MOCK] Categoria "${nomeCategoria}" salva com sucesso!`);
-    }
-    
-    return new Promise(resolve => setTimeout(resolve, 0)); 
+    await fetch(`${URL_API}/categorias`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeCategoria })
+    });
 }
 
-
-
-
-//para adicionar fornecedor
-
-function inicializarFornecedores() {
-    let fornecedores = JSON.parse(localStorage.getItem('listaFornecedores'));
-    if (!fornecedores) {
-        fornecedores = [];
-        localStorage.setItem('listaFornecedores', JSON.stringify(fornecedores));
-    }
-    return fornecedores;
-}
-
-export function obterFornecedores() {
-    return inicializarFornecedores();
+// --- FORNECEDORES ---
+export async function obterFornecedores() {
+    try {
+        const res = await fetch(`${URL_API}/fornecedores`);
+        return await res.json();
+    } catch (erro) { console.error(erro); return []; }
 }
 
 export async function salvarFornecedorNoBanco(fornecedorObjeto) {
-    let fornecedores = inicializarFornecedores();
-    
-    fornecedores.push(fornecedorObjeto);
-    localStorage.setItem('listaFornecedores', JSON.stringify(fornecedores));
-    
-    console.log(`[API MOCK] Fornecedor "${fornecedorObjeto.nomeFantasia}" salvo com sucesso!`);
-    
-    return new Promise(resolve => setTimeout(resolve, 0));
+    await fetch(`${URL_API}/fornecedores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fornecedorObjeto)
+    });
 }
 
-//adicionar produtos no estoque
-function inicializarProdutos() {
-    let produtos = JSON.parse(localStorage.getItem('listaProdutos'));
-    
-    if (!produtos) {
-        produtos = []; 
-        localStorage.setItem('listaProdutos', JSON.stringify(produtos));
-    }
-    return produtos;
-}
-
-export function obterProdutos() {
-    return inicializarProdutos();
+// --- PRODUTOS ---
+export async function obterProdutos() {
+    try {
+        const res = await fetch(`${URL_API}/produtos`);
+        return await res.json();
+    } catch (erro) { console.error(erro); return []; }
 }
 
 export async function salvarProdutoNoBanco(produtoObjeto) {
-    let produtos = inicializarProdutos();
-    produtos.push(produtoObjeto); 
-    localStorage.setItem('listaProdutos', JSON.stringify(produtos));
-    return new Promise(resolve => setTimeout(resolve, 0)); 
+    await fetch(`${URL_API}/produtos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(produtoObjeto)
+    });
 }
 
-//salva as saidas e desconta do estoque
-function inicializarSaidas() {
-    let saidas = JSON.parse(localStorage.getItem('listaSaidas'));
-    if (!saidas) {
-        saidas = []; 
-        localStorage.setItem('listaSaidas', JSON.stringify(saidas));
-    }
-    return saidas;
-}
-
-export function obterSaidas() {
-    return inicializarSaidas();
+// --- SAÍDAS (Requisição real usando a sua Procedure) ---
+export async function obterSaidas() {
+    return []; 
 }
 
 export async function salvarSaidaNoBanco(saidaObjeto) {
-    let saidas = inicializarSaidas();
-    saidas.push(saidaObjeto); 
-    localStorage.setItem('listaSaidas', JSON.stringify(saidas));
+    const mapaSetores = { "Administração": 1, "TI": 2, "Joao": 1, "Maria": 2 };
     
-    let produtos = JSON.parse(localStorage.getItem('listaProdutos'));
-    let indexProduto = produtos.findIndex(p => p.nome === saidaObjeto.produto);
+    // Precisamos buscar o produto no banco para achar o ID dele 
+    const resProd = await fetch(`${URL_API}/cardapio`);
+    const cardapio = await resProd.json();
     
-    if (indexProduto !== -1) {
-        let qtdAtual = parseInt(produtos[indexProduto].quantidade);
-        let qtdSaida = parseInt(saidaObjeto.quantidade);
-        produtos[indexProduto].quantidade = (qtdAtual - qtdSaida).toString();
-        localStorage.setItem('listaProdutos', JSON.stringify(produtos));
+    // O cardapio traz a string "ID - NOME"
+    const produtoEncontrado = cardapio.find(p => p.Produto.includes(saidaObjeto.produto));
+    if(!produtoEncontrado) {
+        alert("Erro: Produto não encontrado no Banco de Dados.");
+        return;
     }
+    const idProdutoDB = parseInt(produtoEncontrado.Produto.split(' - ')[0]);
+    const idSetorDB = mapaSetores[saidaObjeto.setor] || 1; 
 
-    return new Promise(resolve => setTimeout(resolve, 100)); 
+    const resposta = await fetch(`${URL_API}/requisicao`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            idProduto: idProdutoDB,
+            idSetor: idSetorDB,
+            qtdProd: parseInt(saidaObjeto.quantidade),
+            valorUni: 0 
+        })
+    });
+
+    const dados = await resposta.json();
+    if (!resposta.ok) {
+        alert("BANCO DE DADOS RECUSOU:\n" + dados.mensagemErro);
+        throw new Error(dados.mensagemErro);
+    }
+    alert("Operação autorizada!\n" + dados.mensagem);
 }
