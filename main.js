@@ -102,7 +102,7 @@ if (botaoProdutos) {
 
 
 //nova categoria
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Linha alterada "async" adicionado (Gabriel)
     
     const detalhesAdd = document.getElementById('adicionar-tipo');
     const summaryAdd = document.getElementById('summary-adicionar');
@@ -148,10 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
             detalhesAdd.insertAdjacentHTML('beforebegin', cardHtml);
         });
 
-        const produtosSalvos = obterProdutos();
+        const produtosSalvos = await obterProdutos(); //Linha alterada "await" adicionado (Gabriel)
         produtosSalvos.forEach(produto => {
-            const tbody = document.querySelector(`tbody[data-categoria="${produto.tipo}"]`);
-            
+        const tbody = document.querySelector(`tbody[data-categoria="${produto.tipo.trim()}"]`);            
             if (tbody) {
                 const qtd = parseInt(produto.quantidade);
                 let badgeClass = 'badge-alto'; 
@@ -292,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //novo fornecedor
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Linha alterada "async" adicionado (Gabriel)
 
     const listaFornecedoresContainer = document.getElementById('lista-fornecedores');
 
@@ -363,11 +362,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //leva as infos para a o cadastro de produtos
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Linha alterada "async" adicionado (Gabriel)
     
     const selectTipo = document.getElementById('tipo');
     if (selectTipo) {
-        const categoriasSalvas = obterCategorias();
+        const categoriasSalvas = await obterCategorias(); // Linha altera "await" adicionado (Gabriel)
         selectTipo.innerHTML = '<option value="" disabled selected>Selecione um tipo</option>';
         categoriasSalvas.forEach(categoria => {
             const opcao = document.createElement('option');
@@ -379,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const selectFornecedor = document.getElementById('fornecedor');
     if (selectFornecedor) {
-        const fornecedoresSalvos = obterFornecedores();
+        const fornecedoresSalvos = await obterFornecedores(); // Linha alterada "await" adicionado (Gabriel)
         
         selectFornecedor.innerHTML = '<option value="" disabled selected>Selecione um fornecedor</option>';
         
@@ -506,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //select da categoria e do produto
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Linha alterada "async" adicionado (Gabriel)
     const selectProdutoSaida = document.getElementById('produto-saida');
     const selectCategoria = document.getElementById('categoria');
     if (selectProdutoSaida) {
@@ -658,9 +657,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Filtra e desenha na tela
-    function renderizarListagemDeSaidas() {
+    async function renderizarListagemDeSaidas() {
         let saidas = obterSaidas();
-        const categoriasSalvas = obterCategorias();
+        const categoriasSalvas = await obterCategorias(); // Linha alterada "await" adicionado (Gabriel)*
         const paletaCoresPasteis = ['#A7D4FF', '#FFB4A7', '#A7FFBE', '#c6a7ff', '#fff6a7'];
 
         if (isVisaoSetor) {

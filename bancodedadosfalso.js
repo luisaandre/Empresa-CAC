@@ -25,11 +25,18 @@ export async function obterFornecedores() {
 }
 
 export async function salvarFornecedorNoBanco(fornecedorObjeto) {
-    await fetch(`${URL_API}/fornecedores`, {
+    const res = await fetch(`${URL_API}/fornecedores`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(fornecedorObjeto)
     });
+    
+    // Se o HTTP não for 200 (Sucesso), nós expomos a falha
+    if (!res.ok) {
+        const erro = await res.json();
+        alert("O SQL SERVER RECUSOU A INSERÇÃO:\n" + erro.erro);
+        throw new Error("Paralisando o script para não perder o erro no console.");
+    }
 }
 
 // --- PRODUTOS ---
